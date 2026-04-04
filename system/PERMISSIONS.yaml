@@ -1,0 +1,60 @@
+# 權限策略 PERMISSIONS.yaml
+# 所有動作分為 allow / ask / deny 三級
+
+permissions:
+  # === 允許直接執行 ===
+  allow:
+    - read_project_files       # 讀取 project 內任何檔案
+    - web_search               # 網頁搜尋
+    - file_search              # 檔案內容搜尋
+    - write_drafts             # 寫入 outputs/drafts/
+    - write_logs               # 寫入 logs/ 下任何紀錄
+    - git_commit_checkpoint    # git commit（僅 checkpoint 用途）
+    - create_output_files      # 在 outputs/ 建立新檔案
+    - read_memory              # 讀取 memory/ 下的內容
+
+  # === 需要人工確認 ===
+  ask:
+    - modify_skills            # 建立或修改 skills/ 下的檔案
+    - modify_system_rules      # 修改 system/ 下的規則檔
+    - create_task_card         # 建立新的 Task Card
+    - write_long_term_memory   # 寫入 memory/ 下的長期知識
+    - write_reports            # 寫入 outputs/reports/（正式輸出）
+    - install_packages         # 安裝任何套件
+    - modify_claude_md         # 修改 CLAUDE.md
+
+  # === 禁止 ===
+  deny:
+    - shell_delete             # rm / rmdir / 任何刪除操作
+    - send_email               # 直接發送 email
+    - send_message_external    # 直接發送外部訊息（LINE/Telegram/Slack）
+    - publish_content          # 直接發布內容到任何平台
+    - modify_production_data   # 直接修改正式資料來源
+    - execute_payment          # 任何金流操作
+    - auto_write_memory        # 自動寫入長期記憶（未經確認）
+    - spawn_background_process # 啟動背景程序
+
+# === 風險等級對應 ===
+risk_levels:
+  low:
+    description: "純讀取、分析、草稿產出"
+    auto_execute: true
+    approval_needed: false
+
+  medium:
+    description: "涉及檔案修改、知識庫更新"
+    auto_execute: false
+    approval_needed: true
+    approval_type: "inline_confirm"  # 在對話中確認即可
+
+  high:
+    description: "涉及外部動作、正式輸出、資料變更"
+    auto_execute: false
+    approval_needed: true
+    approval_type: "explicit_review"  # 需明確審閱草稿後確認
+
+  critical:
+    description: "涉及金流、刪除、對外發送"
+    auto_execute: false
+    approval_needed: true
+    approval_type: "deny_by_default"  # 預設拒絕，需額外授權

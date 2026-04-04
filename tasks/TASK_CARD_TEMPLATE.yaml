@@ -1,0 +1,45 @@
+# Task Card 模板
+# 複製此檔案到 tasks/ 下，填入具體任務資訊
+# 命名規則：YYYY-MM-DD_[簡述].yaml
+
+task_id: ""                    # 格式：YYYYMMDD-001
+date: ""                       # 建立日期
+status: "pending"              # pending → in_progress → checkpoint → review → done / failed
+
+# === 任務定義 ===
+goal: ""                       # 一句話描述要完成什麼
+context: ""                    # 背景資訊、為什麼要做這件事
+input_data: []                 # 輸入資料來源（檔案路徑、URL、文字）
+
+# === 完成標準（最重要的欄位）===
+definition_of_done:            # 必填。沒有這個欄位不進 runtime
+  - ""                         # 每一條都是可驗證的完成條件
+  - ""
+
+# === 輸出定義 ===
+expected_output:
+  format: ""                   # md / yaml / csv / html / 其他
+  location: "outputs/drafts/"  # 輸出路徑
+  filename: ""                 # 輸出檔名
+
+# === 風險與權限 ===
+risk_level: "low"              # low / medium / high / critical
+approval_needed: false         # true = 輸出後需人工確認才算完成
+allowed_tools:                 # 白名單，只列出這個任務需要的工具
+  - "file_read"
+  - "web_search"
+
+# === 成本控制 ===
+max_tool_calls: 5              # 單一任務最多工具呼叫次數
+max_retries: 3                 # 連續失敗最多重試次數
+max_web_searches: 3            # web search 上限
+
+# === Skill 路由 ===
+skill_type: ""                 # research / writing / ops / review
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints: []                # 每次 checkpoint 的 git commit hash + 描述
+actual_tool_calls: 0           # 實際工具呼叫次數
+result_summary: ""             # 最終結果摘要
+completion_time: ""            # 完成時間
+audit_log_ref: ""              # 對應的 audit log 路徑
