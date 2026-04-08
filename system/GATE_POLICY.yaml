@@ -1,0 +1,45 @@
+# Gate Policy — 四層驗證 Checklist
+# 每次任務完成後，依此順序逐層執行。任一層失敗則依 on_fail 處理。
+
+gates:
+
+  # --- 第一層：Schema 驗證 ---
+  schema_check:
+    description: "Task Card 欄位完整性與格式正確性"
+    checks:
+      - task_id 非空且格式為 YYYYMMDD-###
+      - goal 非空
+      - definition_of_done 至少 1 條
+      - skill_type 為有效值（research / writing / ops / review）
+      - risk_level 為有效值（low / medium / high / critical）
+      - allowed_tools 非空
+    on_fail: "重試 1 次修正格式，仍失敗 → 停下，寫入 logs/errors/"
+
+  # --- 第二層：規則驗證 ---
+  rule_check:
+    description: "執行過程是否違反 GLOBAL_RULES 或 PERMISSIONS"
+    checks:
+      - 使用的工具全部在 Task Card 的 allowed_tools 白名單內
+      - 動作不在 PERMISSIONS.yaml 的 deny 清單中
+      - ask 等級的動作已取得人工確認
+      - 外部查詢未超過 3 輪
+      - 工具呼叫超過 5 次時已做 checkpoint
+    on_fail: "立即停止 + 寫入 logs/errors/ + 通知使用者"
+
+  # --- 第三層：完成驗證 ---
+  completion_check:
+    description: "definition_of_done 逐條比對"
+    checks:
+      - 逐條列出 definition_of_done
+      - 每條標記 pass 或 fail
+      - fail 的條目說明缺什麼
+    on_fail: "列出缺漏清單，詢問使用者是否補充或接受現狀"
+
+  # --- 第四層：風險驗證 ---
+  risk_check:
+    description: "風險等級與實際動作是否一致"
+    checks:
+      - risk_level 與執行中實際動作的風險等級一致
+      - high / critical 等級的輸出已存放在 outputs/drafts/
+      - 對外動作（如有）已轉為草稿等待人工確認
+    on_fail: "輸出移至 outputs/drafts/，等待人工審閱後才可發布"

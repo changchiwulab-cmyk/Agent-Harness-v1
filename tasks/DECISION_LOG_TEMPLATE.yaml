@@ -1,0 +1,25 @@
+# Decision Log 模板
+# 當做出重要決策時，複製此模板到 memory/active_projects/[project]/decisions/
+# 檔名格式：YYYYMMDD-D###_決策簡述.yaml
+
+decision_id: ""              # 格式：YYYYMMDD-D001
+date: ""                     # YYYY-MM-DD
+project: ""                  # 對應 active_projects 下的專案名
+
+# --- 決策內容 ---
+context: ""                  # 什麼情境下需要做這個決定
+options_considered:
+  - option: ""
+    pros: ""
+    cons: ""
+  - option: ""
+    pros: ""
+    cons: ""
+decision: ""                 # 最終選什麼
+reasoning: ""                # 為什麼選這個（不是「感覺」，要有依據）
+
+# --- 追蹤 ---
+risk: ""                     # 這個決定的風險是什麼
+revisit_trigger: ""          # 什麼情況下需要重新檢視這個決定
+related_task: ""             # 觸發這個決策的 Task Card ID（如有）
+status: "active"             # active / superseded / revoked

@@ -8,9 +8,13 @@ memory/
   active_projects/       ← 進行中專案的持久 context
     [project_name]/
       context.md         ← 該專案的背景、目標、限制
-      decisions.md       ← 該專案的重要決策紀錄
+      decisions/         ← 該專案的結構化決策紀錄（用 tasks/DECISION_LOG_TEMPLATE.yaml 格式）
       references/        ← 該專案的參考資料
 ```
+
+> **Decision Log 說明**：重要決策不再用自由格式 decisions.md，改用結構化 YAML。
+> 每筆決策一個檔案，格式見 `tasks/DECISION_LOG_TEMPLATE.yaml`。
+> 檔名格式：`YYYYMMDD-D###_決策簡述.yaml`。寫入前需人工確認。
 
 ## 兩層記憶規則
 
