@@ -1,4 +1,4 @@
-# Agent Harness v1 — 一人公司可控版 Agent 作業系統
+# Agent Harness v1.5 — 一人公司可控版 Agent 作業系統
 
 ## 這是什麼
 
@@ -8,25 +8,27 @@
 不是多代理平台，不是 AI 自動化全套。
 是一個讓 Claude 穩定幫你做事、不失控的結構。
 
-## 架構：三平面、十一模組
+## 架構：三平面、十三模組
 
 ```
 控制平面（Control）
 ├── 1. Interface         Claude Code CLI
 ├── 2. Task Card         tasks/*.yaml — 任務定義
-└── 3. Planner/Router    system/ROUTING_RULES.md — skill 路由
+├── 3. Planner/Router    system/ROUTING_RULES.md — skill 路由
+└── 4. Decision Log      tasks/DECISION_LOG_TEMPLATE.yaml — 決策紀錄
 
 執行平面（Execution）
-├── 4. Context Manager   CLAUDE.md context 規則 — 上下文組裝
-├── 5. Skill Executor    skills/[type]/SKILL.md — 技能執行
-├── 6. Tool Executor     allowed_tools 白名單 — 工具執行
-├── 7. Verifier          四層驗證（schema→規則→完成→風險）
-└── 8. Checkpoint        git commit — 進度保存
+├── 5. Context Manager   CLAUDE.md context 規則 — 上下文組裝
+├── 6. Skill Executor    skills/[type]/SKILL.md + eval_examples.md — 技能執行
+├── 7. Tool Executor     allowed_tools 白名單 — 工具執行
+├── 8. Gate Verifier     system/GATE_POLICY.yaml — 四層驗證 checklist
+└── 9. Checkpoint        git commit — 進度保存
 
 治理平面（Governance）
-├── 9.  Permission       system/PERMISSIONS.yaml — 權限策略
-├── 10. Cost Policy      system/COST_POLICY.md — 成本控制
-└── 11. Audit Log        logs/AUDIT_LOG.md — 稽核紀錄
+├── 10. Operating Context system/OPERATING_CONTEXT.yaml — 系統自我認知
+├── 11. Permission        system/PERMISSIONS.yaml — 權限策略
+├── 12. Cost Policy       system/COST_POLICY.md — 成本控制
+└── 13. Audit Log         logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
 ## 資料夾結構
@@ -40,15 +42,25 @@ agent-harness/
 │   ├── GLOBAL_RULES.md        ← 全域規則 + 失敗分類學
 │   ├── PERMISSIONS.yaml       ← 權限策略（allow/ask/deny + 四級風險）
 │   ├── COST_POLICY.md         ← 成本控制 + 升級觸發條件
-│   └── ROUTING_RULES.md       ← Skill 路由規則
+│   ├── ROUTING_RULES.md       ← Skill 路由規則
+│   ├── GATE_POLICY.yaml       ← 四層驗證 checklist（v1.5 新增）
+│   └── OPERATING_CONTEXT.yaml ← 系統自我認知與邊界（v1.5 新增）
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
+│   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
+│   ├── WEEKLY_REVIEW_TEMPLATE.md   ← 週回顧模板（v1.5 新增）
 │   └── examples/              ← 填好的範例
 ├── skills/
-│   ├── research/SKILL.md      ← 研究分析
-│   ├── writing/SKILL.md       ← 撰寫產出
+│   ├── research/
+│   │   ├── SKILL.md           ← 研究分析
+│   │   └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
+│   ├── writing/
+│   │   ├── SKILL.md           ← 撰寫產出
+│   │   └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
 │   ├── ops/SKILL.md           ← 營運操作
-│   └── review/SKILL.md        ← 品質審查
+│   └── review/
+│       ├── SKILL.md           ← 品質審查
+│       └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
 ├── memory/
 │   ├── README.md              ← 記憶使用規則
 │   ├── user_prefs.md          ← 使用者偏好
@@ -113,6 +125,7 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 
 | 版本 | 內容 | 升級觸發條件 |
 |------|------|-------------|
-| **v1（現在）** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
+| **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
+| **v1.5（現在）** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
 | **v2** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
 | **v3** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拆分能處理的範圍 |
