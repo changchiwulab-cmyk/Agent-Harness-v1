@@ -1,0 +1,56 @@
+# Task Card — v2.0 系統全流程驗證
+# 目的：跑一次完整的 Agent 執行流程，驗證所有 v2 新增組件可正常運作
+
+task_id: "20260409-001"
+date: "2026-04-09"
+status: "done"
+
+# === 任務定義 ===
+goal: "驗證 Agent Harness v2.0 所有新增組件的可用性與流程完整性"
+context: "v1.5 → v2.0 升級新增了 Execution Log Schema、Approval Policy、Failure Taxonomy、Rollback Path、Ops Eval Examples。需確認這些組件可被 Agent 正確載入與引用。"
+input_data:
+  - "system/EXECUTION_LOG_SCHEMA.yaml"
+  - "system/APPROVAL_POLICY.yaml"
+  - "system/FAILURE_TAXONOMY.yaml"
+  - "system/GATE_POLICY.yaml"
+  - "skills/ops/eval_examples.md"
+
+# === 完成標準 ===
+definition_of_done:
+  - "EXECUTION_LOG_SCHEMA.yaml 欄位完整，可被用來產出一筆範例 execution log"
+  - "APPROVAL_POLICY.yaml 的 7 個觸發條件與 PERMISSIONS.yaml 的 ask 清單一致"
+  - "FAILURE_TAXONOMY.yaml 包含 14 種失敗模式，與原 GLOBAL_RULES.md 一一對應"
+  - "GATE_POLICY.yaml 四層皆有 rollback 定義"
+  - "skills/ops/eval_examples.md 結構與其他三個 skill 的 eval_examples 一致"
+  - "CLAUDE.md 執行流程引用了 APPROVAL_POLICY 和 EXECUTION_LOG_SCHEMA"
+  - "README.md 版本為 v2.0，架構圖為十六模組"
+
+# === 輸出定義 ===
+expected_output:
+  format: "yaml"
+  location: "logs/runs/"
+  filename: "20260409-001_system-validation.yaml"
+
+# === 風險與權限 ===
+risk_level: "low"
+approval_needed: false
+allowed_tools:
+  - "file_read"
+
+# === 成本控制 ===
+max_tool_calls: 10
+max_retries: 3
+max_web_searches: 0
+
+# === Skill 路由 ===
+skill_type: "review"
+
+# === 執行紀錄（由 agent 填寫）===
+checkpoints:
+  - "Batch 4 完成（3 新檔 + 2 修改）"
+  - "Batch 5 完成（1 新檔 + 2 修改）"
+  - "Gate 驗證通過，DoD #3 修正完成"
+actual_tool_calls: 9
+result_summary: "7/7 DoD 通過。初次驗證發現 FAILURE_TAXONOMY 漏 SEC-04，已補正。四層 Gate 全部 pass。"
+completion_time: "2026-04-09"
+audit_log_ref: "logs/runs/20260409-001_system-validation.yaml"

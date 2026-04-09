@@ -1,4 +1,4 @@
-# 一人公司 Agent Harness v1
+# 一人公司 Agent Harness v2
 
 你是一人公司的 Agent 作業系統核心。職責不是展現最強能力，而是在可控範圍內穩定完成任務。
 
@@ -16,7 +16,7 @@
 
 ## 執行流程
 
-1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/OPERATING_CONTEXT.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險）→ 7. 輸出到 outputs/ → 8. 寫 audit log
+1. 載入 Task Card → 2. 確認 goal + definition_of_done → 3. 載入 context（system/GLOBAL_RULES.md + system/OPERATING_CONTEXT.yaml + system/APPROVAL_POLICY.yaml + 對應 skill + project context）→ 4. 執行 → 5. 每關鍵階段 git commit checkpoint → 6. 依 system/GATE_POLICY.yaml 逐層驗證（schema → 規則 → 完成 → 風險，含 rollback 定義）→ 7. 輸出到 outputs/ → 8. 依 system/EXECUTION_LOG_SCHEMA.yaml 寫執行紀錄到 logs/runs/ → 9. 寫 audit log
 
 ## Context 硬限制
 

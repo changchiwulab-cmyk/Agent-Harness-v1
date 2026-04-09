@@ -1,0 +1,50 @@
+# Approval Policy — 批准流程規則
+# 定義哪些動作需要人工批准、怎麼批准、超時怎麼處理。
+# 與 PERMISSIONS.yaml 互補：PERMISSIONS 管「能不能」，本檔管「怎麼核准」。
+
+triggers:
+  # --- 自動觸發批准的條件 ---
+  - condition: "risk_level >= high"
+    action: "輸出到 outputs/drafts/，等待人工確認"
+    method: human_confirm
+
+  - condition: "對外動作（email / 發文 / API call）"
+    action: "產出草稿，不直接執行"
+    method: draft_first
+
+  - condition: "修改 system/ 目錄下任何檔案"
+    action: "列出變更差異，等待確認"
+    method: human_confirm
+
+  - condition: "修改 skills/ 目錄下任何檔案"
+    action: "列出變更差異，等待確認"
+    method: human_confirm
+
+  - condition: "寫入 memory/ 長期記憶"
+    action: "列出擬寫入內容，等待確認"
+    method: human_confirm
+
+  - condition: "建立新的 Task Card"
+    action: "展示 goal + definition_of_done，等待確認"
+    method: human_confirm
+
+  - condition: "寫入正式報告（outputs/reports/）"
+    action: "先存 drafts/，確認後移至 reports/"
+    method: draft_first
+
+approval_methods:
+  human_confirm:
+    description: "直接向使用者展示內容並等待明確同意"
+    timeout: "不設超時，持續等待"
+    on_no_response: "停留在等待狀態，不自動執行"
+
+  draft_first:
+    description: "先產出草稿到 outputs/drafts/，通知使用者有草稿待審"
+    timeout: "不設超時，草稿保留直到被人工處理"
+    on_no_response: "草稿保留，不自動發布或移動"
+
+escalation:
+  - condition: "批准等待中發現新風險"
+    action: "追加風險說明到草稿，重新通知使用者"
+  - condition: "同一任務產生 3 次以上批准請求"
+    action: "暫停任務，建議使用者重新評估任務範圍"

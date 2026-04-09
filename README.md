@@ -1,4 +1,4 @@
-# Agent Harness v1.5 — 一人公司可控版 Agent 作業系統
+# Agent Harness v2.0 — 一人公司 Decision Control Plane
 
 ## 這是什麼
 
@@ -8,7 +8,7 @@
 不是多代理平台，不是 AI 自動化全套。
 是一個讓 Claude 穩定幫你做事、不失控的結構。
 
-## 架構：三平面、十三模組
+## 架構：三平面、十六模組
 
 ```
 控制平面（Control）
@@ -25,10 +25,13 @@
 └── 9. Checkpoint        git commit — 進度保存
 
 治理平面（Governance）
-├── 10. Operating Context system/OPERATING_CONTEXT.yaml — 系統自我認知
-├── 11. Permission        system/PERMISSIONS.yaml — 權限策略
-├── 12. Cost Policy       system/COST_POLICY.md — 成本控制
-└── 13. Audit Log         logs/AUDIT_LOG.md — 稽核紀錄
+├── 10. Operating Context  system/OPERATING_CONTEXT.yaml — 系統自我認知
+├── 11. Permission         system/PERMISSIONS.yaml — 權限策略
+├── 12. Approval Policy    system/APPROVAL_POLICY.yaml — 批准流程（v2 新增）
+├── 13. Cost Policy        system/COST_POLICY.md — 成本控制
+├── 14. Failure Taxonomy   system/FAILURE_TAXONOMY.yaml — 失敗分類學（v2 新增）
+├── 15. Execution Log      system/EXECUTION_LOG_SCHEMA.yaml — 執行紀錄 schema（v2 新增）
+└── 16. Audit Log          logs/AUDIT_LOG.md — 稽核紀錄
 ```
 
 ## 資料夾結構
@@ -43,8 +46,11 @@ agent-harness/
 │   ├── PERMISSIONS.yaml       ← 權限策略（allow/ask/deny + 四級風險）
 │   ├── COST_POLICY.md         ← 成本控制 + 升級觸發條件
 │   ├── ROUTING_RULES.md       ← Skill 路由規則
-│   ├── GATE_POLICY.yaml       ← 四層驗證 checklist（v1.5 新增）
-│   └── OPERATING_CONTEXT.yaml ← 系統自我認知與邊界（v1.5 新增）
+│   ├── GATE_POLICY.yaml            ← 四層驗證 checklist + rollback（v1.5+v2）
+│   ├── OPERATING_CONTEXT.yaml      ← 系統自我認知與邊界（v1.5 新增）
+│   ├── APPROVAL_POLICY.yaml        ← 批准流程規則（v2 新增）
+│   ├── FAILURE_TAXONOMY.yaml       ← 14 種失敗模式獨立檔（v2 新增）
+│   └── EXECUTION_LOG_SCHEMA.yaml   ← 執行紀錄結構定義（v2 新增）
 ├── tasks/
 │   ├── TASK_CARD_TEMPLATE.yaml
 │   ├── DECISION_LOG_TEMPLATE.yaml  ← 決策紀錄模板（v1.5 新增）
@@ -57,7 +63,9 @@ agent-harness/
 │   ├── writing/
 │   │   ├── SKILL.md           ← 撰寫產出
 │   │   └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
-│   ├── ops/SKILL.md           ← 營運操作
+│   ├── ops/
+│   │   ├── SKILL.md           ← 營運操作
+│   │   └── eval_examples.md   ← 好/壞輸出範例（v2 新增）
 │   └── review/
 │       ├── SKILL.md           ← 品質審查
 │       └── eval_examples.md   ← 好/壞輸出範例（v1.5 新增）
@@ -126,6 +134,7 @@ cp tasks/TASK_CARD_TEMPLATE.yaml tasks/2026-04-03_你的任務.yaml
 | 版本 | 內容 | 升級觸發條件 |
 |------|------|-------------|
 | **v1** | 單核心代理 + Task Card + Checkpoint + Verifier + Audit | — |
-| **v1.5（現在）** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
-| **v2** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
-| **v3** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拆分能處理的範圍 |
+| **v1.5** | + Gate Policy + Operating Context + Decision Log + Eval Examples + Weekly Review | 馬鞍工程原則導入：驗證集中化、系統自知、決策可追溯 |
+| **v2（現在）** | + Approval Policy + Failure Taxonomy + Execution Log Schema + Rollback Path + Ops Eval | 馬鞍工程落地：批准流程獨立化、失敗模式可引用、執行紀錄結構化 |
+| **v3** | 拆分 bounded specialists（research/sales/content） | 單一代理的 context 經常超限；任務類型間的規則衝突頻繁 |
+| **v4** | Graph orchestration + 進階 checkpoint persistence | 任務間依賴複雜度超過線性拆分能處理的範圍 |
