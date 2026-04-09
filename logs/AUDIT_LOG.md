@@ -31,3 +31,24 @@
 ## 紀錄（依時間倒序）
 
 <!-- 新紀錄加在這裡 -->
+
+```yaml
+- task_id: "20260409-001"
+  date: "2026-04-09"
+  skill_type: "research"
+  goal: "調查越南市場 2026 年主流 AI 生產力工具的採用現況與趨勢"
+  status: "done"
+  model_used: "claude-opus-4-6"
+  tools_called:
+    - tool_name: "web_search"
+      call_count: 3
+    - tool_name: "file_read"
+      call_count: 5
+  checkpoints: 3
+  approval_needed: false
+  approval_given: false
+  output_path: "outputs/drafts/vietnam-ai-tools-research.md"
+  error_summary: "input_data 引用的 memory/active_projects/vietnam-expansion/context.md 不存在，已跳過內部資料查詢"
+  estimated_tokens: "~15,000"
+  notes: "首次執行驗證 — Agent Harness v1 骨架跑通。.gitignore 正確排除 drafts 目錄。四層驗證全部通過。"
+```
