@@ -1,0 +1,88 @@
+# Failure Taxonomy — 14 種 Agent 常見失敗模式
+# 從 GLOBAL_RULES.md 提取為獨立可引用檔案。
+# 每種失敗標註類別、頻率、緩解措施。
+
+categories:
+
+  # === 規格類（最常見，佔 ~42%）===
+  spec:
+    - id: SPEC-01
+      name: "角色/目標違反"
+      description: "違反任務指定的角色或目標"
+      mitigation: "執行前重讀 Task Card goal，完成後比對"
+
+    - id: SPEC-02
+      name: "步驟重複/迴圈"
+      description: "重複執行相同步驟或陷入無限迴圈"
+      mitigation: "每步驟結束記錄進度；連續 3 次相同動作 → 停止"
+
+    - id: SPEC-03
+      name: "對話歷史遺失"
+      description: "遺失先前對話中的重要資訊"
+      mitigation: "關鍵決策寫入 checkpoint；超過 20 輪主動摘要"
+
+    - id: SPEC-04
+      name: "不知道何時停止"
+      description: "任務已完成但繼續執行，或無法判斷完成點"
+      mitigation: "嚴格比對 definition_of_done；逐條 pass/fail"
+
+  # === 協調類（佔 ~37%）===
+  coordination:
+    - id: COORD-01
+      name: "Context 被重置"
+      description: "對話 context 被意外清空或截斷"
+      mitigation: "git checkpoint 保存進度；重要狀態寫入檔案"
+
+    - id: COORD-02
+      name: "模糊需求硬做"
+      description: "遇到模糊需求時沒有澄清就硬做"
+      mitigation: "不確定的需求先列選項，詢問使用者確認"
+
+    - id: COORD-03
+      name: "目標偏離"
+      description: "任務執行中偏離原始目標"
+      mitigation: "每個子任務完成後回頭比對 Task Card goal"
+
+    - id: COORD-04
+      name: "忽略使用者輸入"
+      description: "忽略使用者的修正意見或額外指示"
+      mitigation: "使用者發言後先確認理解，再繼續執行"
+
+  # === 驗證類（佔 ~21%）===
+  validation:
+    - id: VAL-01
+      name: "假完成"
+      description: "任務沒做完就宣告完成"
+      mitigation: "Gate Policy completion_check 逐條比對 DoD"
+
+    - id: VAL-02
+      name: "驗證不完整"
+      description: "只查了部分條件就通過"
+      mitigation: "checklist 每條都必須明確標記 pass/fail"
+
+    - id: VAL-03
+      name: "驗證判斷錯誤"
+      description: "看到格式正確就當內容正確"
+      mitigation: "格式驗證和內容驗證分開執行"
+
+  # === 安全類（獨立維度）===
+  security:
+    - id: SEC-01
+      name: "未授權動作"
+      description: "執行了 deny 清單中的動作"
+      mitigation: "動作前比對 PERMISSIONS.yaml deny 清單"
+
+    - id: SEC-02
+      name: "資料洩漏"
+      description: "敏感資料出現在不應出現的地方"
+      mitigation: "敏感資料不進 context；輸出前檢查"
+
+    - id: SEC-03
+      name: "成本失控"
+      description: "遞迴迴圈燒 token、無限重試"
+      mitigation: "工具呼叫 5 次 checkpoint；連續失敗 3 次停止"
+
+    - id: SEC-04
+      name: "幻覺驅動行動"
+      description: "基於幻覺的資訊採取真實動作"
+      mitigation: "區分已知事實/推論/待驗證；外部動作前交叉驗證來源"

@@ -14,6 +14,7 @@ gates:
       - risk_level 為有效值（low / medium / high / critical）
       - allowed_tools 非空
     on_fail: "重試 1 次修正格式，仍失敗 → 停下，寫入 logs/errors/"
+    rollback: "不產出任何檔案；Task Card 標記 status: blocked"
 
   # --- 第二層：規則驗證 ---
   rule_check:
@@ -25,6 +26,7 @@ gates:
       - 外部查詢未超過 3 輪
       - 工具呼叫超過 5 次時已做 checkpoint
     on_fail: "立即停止 + 寫入 logs/errors/ + 通知使用者"
+    rollback: "撤銷本次所有未 checkpoint 的變更（git checkout）；已 checkpoint 的保留供檢視"
 
   # --- 第三層：完成驗證 ---
   completion_check:
@@ -34,6 +36,7 @@ gates:
       - 每條標記 pass 或 fail
       - fail 的條目說明缺什麼
     on_fail: "列出缺漏清單，詢問使用者是否補充或接受現狀"
+    rollback: "產出標記為 partial，存入 outputs/drafts/ 而非 reports/"
 
   # --- 第四層：風險驗證 ---
   risk_check:
@@ -43,3 +46,4 @@ gates:
       - high / critical 等級的輸出已存放在 outputs/drafts/
       - 對外動作（如有）已轉為草稿等待人工確認
     on_fail: "輸出移至 outputs/drafts/，等待人工審閱後才可發布"
+    rollback: "所有產出鎖定在 drafts/；Audit Log 標記 risk_escalated: true"

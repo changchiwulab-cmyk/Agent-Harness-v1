@@ -1,0 +1,50 @@
+# Execution Log Schema
+# 每次任務執行完成後，依此 schema 寫入 logs/runs/
+
+execution_log:
+  run_id: "RUN-YYYYMMDD-###"        # 唯一識別碼
+  task_id: ""                         # 對應的 Task Card ID
+  skill_type: ""                      # research / writing / ops / review
+  started_at: "YYYY-MM-DD HH:MM"
+  ended_at: "YYYY-MM-DD HH:MM"
+  status: ""                          # completed / failed / partial / cancelled
+
+  # --- 執行細節 ---
+  tools_used:
+    - tool: ""                        # 工具名稱
+      call_count: 0                   # 呼叫次數
+      # 範例：
+      # - tool: web_search
+      #   call_count: 2
+
+  checkpoints:
+    - commit: ""                      # git commit hash
+      stage: ""                       # 階段描述
+      # 範例：
+      # - commit: "abc1234"
+      #   stage: "完成資料蒐集"
+
+  # --- 成本估算 ---
+  token_estimate:
+    input: 0
+    output: 0
+    total: 0
+
+  # --- 審批紀錄 ---
+  approvals:
+    - action: ""                      # 需要批准的動作
+      status: ""                      # approved / rejected / pending
+      approved_by: "human"
+      timestamp: ""
+
+  # --- 結果 ---
+  output_path: ""                     # 產出檔案路徑（outputs/drafts/ 或 outputs/reports/）
+  error_summary: ""                   # 若失敗，簡述原因
+  gate_results:
+    schema_check: ""                  # pass / fail
+    rule_check: ""                    # pass / fail
+    completion_check: ""              # pass / fail
+    risk_check: ""                    # pass / fail
+
+  # --- 備註 ---
+  notes: ""
